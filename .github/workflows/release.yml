@@ -1,7 +1,8 @@
 name: Release
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
@@ -20,46 +21,11 @@ jobs:
       run: |
         go mod download
 
-    - name: Build and release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build binaries
       run: |
-        echo "Building binaries"
         mkdir -p release
         GOOS=linux GOARCH=amd64 go build -o release/myapp-linux-amd64
         GOOS=linux GOARCH=arm64 go build -o release/myapp-linux-arm64
         GOOS=windows GOARCH=amd64 go build -o release/myapp-windows-amd64.exe
         GOOS=darwin GOARCH=amd64 go build -o release/myapp-darwin-amd64
-        echo "Creating release"
-        go get github.com/aktau/github-release
-        github-release release \
-          --user myusername \
-          --repo myreponame \
-          --tag v1.0 \
-          --name "v1.0" \
-          --description "Release description"
-        echo "Uploading binaries"
-        github-release upload \
-          --user myusername \
-          --repo myreponame \
-          --tag v1.0 \
-          --name "myapp-linux-amd64" \
-          --file "release/myapp-linux-amd64"
-        github-release upload \
-          --user myusername \
-          --repo myreponame \
-          --tag v1.0 \
-          --name "myapp-linux-arm64" \
-          --file "release/myapp-linux-arm64"
-        github-release upload \
-          --user myusername \
-          --repo myreponame \
-          --tag v1.0 \
-          --name "myapp-windows-amd64.exe" \
-          --file "release/myapp-windows-amd64.exe"
-        github-release upload \
-          --user myusername \
-          --repo myreponame \
-          --tag v1.0 \
-          --name "myapp-darwin-amd64" \
-          --file "release/myapp-darwin-amd64"
+        ls -al release
