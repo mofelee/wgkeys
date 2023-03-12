@@ -14,8 +14,6 @@ jobs:
 
     - name: Set up Go
       uses: actions/setup-go@v3
-      with:
-        go-version: '1.17'
 
     - name: Install dependencies
       run: |
@@ -24,8 +22,14 @@ jobs:
     - name: Build binaries
       run: |
         mkdir -p release
-        GOOS=linux GOARCH=amd64 go build -o release/myapp-linux-amd64
-        GOOS=linux GOARCH=arm64 go build -o release/myapp-linux-arm64
-        GOOS=windows GOARCH=amd64 go build -o release/myapp-windows-amd64.exe
-        GOOS=darwin GOARCH=amd64 go build -o release/myapp-darwin-amd64
+        GOOS=linux GOARCH=amd64 go build -o release/wgkeys-linux-amd64
+        GOOS=linux GOARCH=arm64 go build -o release/wgkeys-linux-arm64
+        GOOS=windows GOARCH=amd64 go build -o release/wgkeys-windows-amd64.exe
+        GOOS=darwin GOARCH=amd64 go build -o release/wgkeys-darwin-amd64
         ls -al release
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: release/*
