@@ -16,6 +16,6 @@ func main() {
     publicKey := privateKey.PublicKey()
 
     // Print the private and public keys in hexadecimal format
-    fmt.Printf("Private key: %s\n", privateKey.String())
-    fmt.Printf("Public key: %s\n", publicKey.String())
+    fmt.Printf("private: %s\n", privateKey.String())
+    fmt.Printf("public: %s\n", publicKey.String())
 }
